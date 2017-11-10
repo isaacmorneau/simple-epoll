@@ -81,26 +81,26 @@ int make_non_blocking(int sfd) {
 }
 
 int echo(epoll_data * epd) {
-	while (1) {
-	    //read max standard pipe allocation size
-		int nr = splice(epd->fd, 0, epd->pipefd[1], 0, USHRT_MAX, SPLICE_F_MOVE | SPLICE_F_MORE | SPLICE_F_NONBLOCK);
+    while (1) {
+        //read max standard pipe allocation size
+        int nr = splice(epd->fd, 0, epd->pipefd[1], 0, USHRT_MAX, SPLICE_F_MOVE | SPLICE_F_MORE | SPLICE_F_NONBLOCK);
         if (nr == -1 && errno != EAGAIN) {
             perror("splice");
         }
-		if (nr <= 0) {
-			break;
+        if (nr <= 0) {
+            break;
         }
-		do {
-			int ret = splice(epd->pipefd[0], 0, epd->fd, 0, nr, SPLICE_F_MOVE | SPLICE_F_MORE);
-			if (ret <= 0) {
-			    if (ret == -1 && errno != EAGAIN) {
-			        perror("splice2");
+        do {
+            int ret = splice(epd->pipefd[0], 0, epd->fd, 0, nr, SPLICE_F_MOVE | SPLICE_F_MORE);
+            if (ret <= 0) {
+                if (ret == -1 && errno != EAGAIN) {
+                    perror("splice2");
                 }
-				break;
-			}
-			nr -= ret;
-		} while (nr);
-	}
+                break;
+            }
+            nr -= ret;
+        } while (nr);
+    }
     return 0;
 }
 
