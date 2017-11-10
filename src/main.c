@@ -84,7 +84,7 @@ int main(int argc, char ** argv) {
     data = calloc(1, sizeof(epoll_data));
     epoll_data_init(data, sfd);
     event.data.ptr = data;
-    event.events = EPOLLIN | EPOLLOUT | EPOLLET | EPOLLEXCLUSIVE;
+    event.events = EPOLLIN | EPOLLET | EPOLLEXCLUSIVE;
     s = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
     if (s == -1) {
         perror("epoll_ctl");
@@ -147,7 +147,7 @@ int main(int argc, char ** argv) {
                         epoll_data_init(data, infd);
 
                         event.data.ptr = data;
-                        event.events = EPOLLIN | EPOLLET;
+                        event.events = EPOLLIN | EPOLLOUT | EPOLLET;
                         s = epoll_ctl(efd, EPOLL_CTL_ADD, infd, &event);
                         if (s == -1) {
                             perror("epoll_ctl");
