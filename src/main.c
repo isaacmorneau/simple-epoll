@@ -100,10 +100,14 @@ int main(int argc, char ** argv) {
 
         n = epoll_wait(efd, events, MAXEVENTS, -1);
         for (i = 0; i < n; i++) {
-            if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP)) {
+            if (events[i].events & EPOLLERR) {
                 // An error has occured on this fd, or the socket is not ready for reading
                 // though its odd we were notified.
                 fprintf (stderr, "epoll error\n");
+                epoll_data_close((epoll_data *)events[i].data.ptr);
+                free(events[i].data.ptr);
+                continue;
+            } else if (events[i].events & EPOLLHUP) {
                 epoll_data_close((epoll_data *)events[i].data.ptr);
                 free(events[i].data.ptr);
                 continue;
