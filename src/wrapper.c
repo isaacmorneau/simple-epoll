@@ -90,7 +90,7 @@ int echo(epoll_data * epd) {
         if (nr <= 0) {
             break;
         }
-        printf("read: %d", nr);
+        printf("read: %d\n", nr);
         do {
             int ret = splice(epd->pipefd[0], 0, epd->fd, 0, nr, SPLICE_F_MOVE | SPLICE_F_MORE);
             if (ret <= 0) {
@@ -99,7 +99,7 @@ int echo(epoll_data * epd) {
                 }
                 break;
             }
-            printf("wrote: %d", ret);
+            printf("wrote: %d\n", ret);
             nr -= ret;
         } while (nr);
     }
@@ -115,7 +115,7 @@ int echo_harder(epoll_data * epd) {
             }
             break;
         }
-        printf("wrote: %d", ret);
+        printf("wrote: %d\n", ret);
     }
 }
 void epoll_data_close(epoll_data * epd) {
