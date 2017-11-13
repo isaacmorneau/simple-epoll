@@ -92,7 +92,7 @@ int echo(epoll_data * epd) {
         }
         printf("read: %d\n", nr);
         do {
-            int ret = splice(epd->pipefd[0], 0, epd->fd, 0, nr, SPLICE_F_MOVE | SPLICE_F_MORE);
+            int ret = splice(epd->pipefd[0], 0, epd->fd, 0, nr, SPLICE_F_MOVE | SPLICE_F_MORE | SPLICE_F_NONBLOCK);
             if (ret <= 0) {
                 if (ret == -1 && errno != EAGAIN) {
                     perror("splice2");
@@ -108,7 +108,7 @@ int echo(epoll_data * epd) {
 
 int echo_harder(epoll_data * epd) {
     while (1) {
-        int ret = splice(epd->pipefd[0], 0, epd->fd, 0, USHRT_MAX, SPLICE_F_MOVE | SPLICE_F_MORE);
+        int ret = splice(epd->pipefd[0], 0, epd->fd, 0, USHRT_MAX, SPLICE_F_MOVE | SPLICE_F_MORE | SPLICE_F_NONBLOCK);
         if (ret <= 0) {
             if (ret == -1 && errno != EAGAIN) {
                 perror("splice");
