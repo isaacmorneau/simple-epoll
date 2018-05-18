@@ -4,21 +4,21 @@
 
 Nov 9, 2017
 
-Many times when someone is trying to get faster socket I/O they read an article on how [epoll](http://man7.org/linux/man-pages/man7/epoll.7.html)
+Many times when someone is trying to get faster socket I/O, they read an article on how [epoll](http://man7.org/linux/man-pages/man7/epoll.7.html)
 is amazing and how it should be used as its better than both [select](http://man7.org/linux/man-pages/man2/select.2.html) and [poll](http://man7.org/linux/man-pages/man2/poll.2.html).
-While this is the case the tutorials for it are from what I've found quite confusing. This is my effort to demystify it.
+While this is the case, the tutorials for it are from what I've found quite confusing. This is my effort to demystify it.
 
 The code I'm using in this is posted to the [simple-epoll](https://github.com/isaacmorneau/simple-epoll) repo and it's a high speed echo server.
 
 ---
 
 Starting off in `main.c` epoll works by having a structure that holds all the information on the file descriptors (FDs) you're listening to.
-The system when getting an events will put them all at the start of the array you allocate and then return the number of events.
+The system, when getting events, will put them all at the start of the array you allocate and then return the number of events.
 
-To start setting up epoll you need to create the structure with `epoll_create1` as the original `epoll_create` has unused params and doesnt allow you to set flags
+To start setting up epoll you need to create the structure with `epoll_create1`, as the original `epoll_create` has unused params and doesnt allow you to set flags.
 Once the structure has been made we can add the listening socket to the structure to be notified when it recieves a connection request.
 
-Now that the basic server setup has been completed we loop on asking epoll to wake us when something happens this is the `epoll_wait` function.
+Now that the basic server setup has been completed we loop, asking epoll to wake us when something happens. This is the `epoll_wait` function.
 The return from it is how many events need to be handled or in other terms how many FDs that epoll was watching have had things happen to them.
 
 > Note: The `#pragma omp parallel` is a directive to openMP to run the next code on as many cores as I have. 
@@ -34,9 +34,9 @@ Choosing how to handle the events makes up the majority of the rest of the code.
 
 The bulk of code would happen typically on the 2.2 path where data was recieved and it was one of the clients connected sending data to the server. That functionality here is very simple as it just calls `echo`
 which loops over [splice](http://man7.org/linux/man-pages/man2/splice.2.html) (another very cool function for speedy FDs transfers)
-to just move the pages into a pipe and then reassigning the pages back to the same FD.
+to just move the pages into a pipe, and then reassigning the pages back to the same FD.
 
-In `wrapper.c` there are two functions `make_connected` and `make_bound` that have a loop on trying to bind or connect respectively. This is due to how the replacement for the old version of resolving and address using 
+In `wrapper.c` there are two functions `make_connected` and `make_bound` that have a loop on trying to bind or connect, respectively. This is due to how the replacement for the old version of resolving and address using 
 `gethostbyname` worked vs the new way using [getaddrinfo](http://man7.org/linux/man-pages/man3/getaddrinfo.3.html) works. Because there are multiple possible network interfaces and IP types that are possible to connect
-to a function that only returns one such as `gethostbyname` doesn't suffice. To handle this `getaddrinfo` returns a linked list that will be iterated over until one of the results works thus the reason for the loop. Once
+to, a function that only returns one (such as `gethostbyname`) doesn't suffice. To handle this, `getaddrinfo` returns a linked list that will be iterated over until one of the results works, thus the reason for the loop. Once
 one of the results is successful you can stop looping.
