@@ -1,22 +1,14 @@
-#include <getopt.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <errno.h>
-#include <sys/epoll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netdb.h>
-
 #include "wrappers/wrapper.h"
+
+#include <stdio.h>
+#include <getopt.h>
 
 #define SOCKOPTS "p:h"
 
 void print_help() {
     printf("usage options:\n"
-            "\t [p]ort <1-65535> the port to listen to\n"
-            "\t [h]elp this message\n"
+            "\t -[-p]ort <1-65535> - the port to listen to\n"
+            "\t -[-h]elp - this message\n"
           );
 }
 

@@ -35,9 +35,10 @@ set(SIMPLE_CLIENT
 
 add_executable(simpleserver ${SIMPLE_SERVER} ${WRAPPERS})
 
-#add_executable(simpleclient ${SIMPLE_CLIENT} ${WRAPPERS})
+add_executable(simpleclient ${SIMPLE_CLIENT} ${WRAPPERS})
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 target_link_libraries(simpleserver rt Threads::Threads)
+target_link_libraries(simpleclient rt Threads::Threads)
