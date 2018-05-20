@@ -79,7 +79,7 @@ int main(int argc, char ** argv) {
     while (1) {
         int n, i;
 
-        n = epoll_wait(efd, events, MAXEVENTS, -1);
+        n = wait_epoll(efd, events);
         for (i = 0; i < n; i++) {
             if (EVENT_ERR(events, i) || EVENT_HUP(events, i)) {
                 // A socket got closed
